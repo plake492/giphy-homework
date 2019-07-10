@@ -1,4 +1,17 @@
+header, div {
+    margin: 10px; 
+}
+
 img {
-    width: 250px;
-    height: 250px;
+    width: 300px;
+    height: 300px;
+}
+
+#gif-view {
+    display: flex;
+    flex-flow: column
+}
+
+.gifs{
+    margin: 5px;
 }

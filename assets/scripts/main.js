@@ -1,35 +1,74 @@
+let topics = ['The Office', 'Stranger Things', 'Parks and Rec', 'Breaking Bad','Arrested Development','Greys Anatomy','Twin Peaks','Master of None','Big Mouth','Friends']
 
+$(document).on("click", ".gifs", displayGIf);
+function displayGIf() {
+       
+  let topic = $(this).attr("data-name"); 
+  let queryURL ="https://api.giphy.com/v1/gifs/search?api_key=7h1vvQHXMixjDPQUyFAyvM6d9E60ANw4&q="+ topic +"s&limit=10&rating=r";
+       
+  $.ajax({
+    url: queryURL,
+    method: "GET"
+  }).then(function(response) {
+    $('#gif-view').empty() // stop buttons from repeating
 
-    let topics = ['The Office', 'Stranger Things', 'Parks and Rec', 'Breaking Bad',]
+console.log(response)
 
-    function displayGIf() {
+// ----------------- Add GIFS ----------------- // 
 
-        let topic = $(this).attr("data-name"); // WILL NEED ONCE I ADD A SEARCH BAR 
-        let queryURL ="https://api.giphy.com/v1/gifs/search?api_key=7h1vvQHXMixjDPQUyFAyvM6d9E60ANw4&q="+ topic +"s&limit=10";
+    for (let i = 0; i < response.data.length; i++) {
+      let rating = response.data[i].rating
+      let gif = `
+         <div>
+            <img src="${response.data[i].images.original_still.url}"  data-still="${response.data[i].images.original_still.url}" data-animate="${response.data[i].images.original.url}" data-state="still" class="gif">
+          <p>Rating: ${rating}</p>
+          </div>    
+            `;         
+        $('#gif-view').prepend(gif);
+      };
+// ----------------- Add GIFS ----------------- // 
+// ----------------- Pause , Play ----------------- // 
+      $(".gif").on("click", function() {
 
-        $.ajax({
-          url: queryURL,
-          method: "GET"
-        }).then(function(response) {
-            for (let i = 0; i < response.data.length; i++) {
-            console.log(response)
-            console.log(queryURL)
-            $('#gif-view').prepend(`<img src="${response.data[i].images.original.url}">`)
-            }
-        });
-      }
+        let state = $(this).attr('data-state')
+        let animate = $(this).attr("data-animate")
+        let still = $(this).attr("data-still")
+          
+        if (state === 'still') {
+          $(this).attr('src', animate)
+          $(this).attr('data-state', 'animate')
+        } else {
+          $(this).attr('src', still)
+          $(this).attr('data-state', 'still')
+        }
+      });
+// ----------------- Pause , Play ----------------- // 
+  });
+}
    
 
-    function renderButtons() {
-        $("#buttons-view").empty(); 
-        for (var i = 0; i < topics.length; i++) {
-          var a = $("<button>");
-          a.addClass("gifs"); 
-          a.attr("data-name", topics[i]); 
-          a.text(topics[i]);
-          $("#buttons-view").append(a);
-        }
-      }
+function renderButtons() {
+  $("#buttons-view").empty(); 
+  for (var i = 0; i < topics.length; i++) {
+    var buttons = `
+      <button class="gifs" data-name="${topics[i]}">
+        <h4>${topics[i]}</h4>
+      </button>`;
+      $("#buttons-view").append(buttons);
+  }
+}
 
-      $(document).on("click", ".gifs", displayGIf);
-      renderButtons();
+      
+$("#add-show").on("click", function(event) {
+  event.preventDefault();
+  var show = $("#show-input").val().trim();
+  topics.push(show);
+  renderButtons();
+});
+
+renderButtons();
+
+
+
+
+   
