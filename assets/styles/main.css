@@ -1,4 +1,8 @@
-header, div {
+#body-change {
+    background-color: black;
+}
+
+header, div, form {
     margin: 10px; 
 }
 
@@ -14,4 +18,7 @@ img {
 
 .gifs{
     margin: 5px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: white
 }

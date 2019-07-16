@@ -1,10 +1,12 @@
 let topics = ['The Office', 'Stranger Things', 'Parks and Rec', 'Breaking Bad','Arrested Development','Greys Anatomy','Twin Peaks','Master of None','Big Mouth','Friends']
+let limit = 10
+let fav = []
 
 $(document).on("click", ".gifs", displayGIf);
 function displayGIf() {
        
   let topic = $(this).attr("data-name"); 
-  let queryURL ="https://api.giphy.com/v1/gifs/search?api_key=7h1vvQHXMixjDPQUyFAyvM6d9E60ANw4&q="+ topic +"s&limit=10&rating=r";
+  let queryURL ="https://api.giphy.com/v1/gifs/search?api_key=7h1vvQHXMixjDPQUyFAyvM6d9E60ANw4&q="+ topic +"&limit=" +  limit + "&tag=tv";
        
   $.ajax({
     url: queryURL,
@@ -13,6 +15,16 @@ function displayGIf() {
     $('#gif-view').empty() // stop buttons from repeating
 
 console.log(response)
+  
+// ----------------- Favorits List ----------------- // 
+
+  $(document).on('click','#addFav', addFav);
+    function addFav() {
+      fav.push(this.value)
+      console.log(fav)
+  }
+// ----------------- Favorits List ----------------- // 
+
 
 // ----------------- Add GIFS ----------------- // 
 
@@ -22,9 +34,10 @@ console.log(response)
          <div>
             <img src="${response.data[i].images.original_still.url}"  data-still="${response.data[i].images.original_still.url}" data-animate="${response.data[i].images.original.url}" data-state="still" class="gif">
           <p>Rating: ${rating}</p>
+          <button id="addFav" value="${response.data[i].images.original_still.url}">Add to Favorites</button>
           </div>    
             `;         
-        $('#gif-view').prepend(gif);
+        $('#gif-view').append(gif);
       };
 // ----------------- Add GIFS ----------------- // 
 // ----------------- Pause , Play ----------------- // 
@@ -43,11 +56,14 @@ console.log(response)
         }
       });
 // ----------------- Pause , Play ----------------- // 
+   
   });
 }
+
+
    
 
-function renderButtons() {
+renderButtons = () => {
   $("#buttons-view").empty(); 
   for (var i = 0; i < topics.length; i++) {
     var buttons = `
@@ -70,5 +86,3 @@ renderButtons();
 
 
 
-
-   
